@@ -12,6 +12,7 @@ class TokenUsage(BaseModel):
 
 class HuggingFaceGenerationConfig(BaseModel):
     do_sample: bool = Field(default=False)
+    early_stopping: bool = Field(default=True)
     num_beams: int = Field(default=1)
     num_return_sequences: int = Field(default=1)
     max_new_tokens: int = Field(default=32)
@@ -21,6 +22,21 @@ class HuggingFaceGenerationConfig(BaseModel):
     top_k: int = Field(default=0)
     typical_p: float = Field(default=1, ge=0, le=1)
     repetition_penalty: float = Field(default=1)
+
+    def __hash__(self):
+        return hash(
+            str(self.do_sample) +
+            str(self.early_stopping) +
+            str(self.num_beams) +
+            str(self.num_return_sequences) +
+            str(self.max_new_tokens) +
+            str(self.min_new_tokens) +
+            str(self.temperature) +
+            str(self.top_p) +
+            str(self.top_k) +
+            str(self.typical_p) +
+            str(self.repetition_penalty)
+        )
 
 
 class HuggingFaceCompletionInputs(BaseModel):
