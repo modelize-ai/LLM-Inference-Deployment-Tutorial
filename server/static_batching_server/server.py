@@ -63,10 +63,11 @@ class Server:
         inp: HuggingFaceCompletionInputs
     ) -> Tuple[HuggingFaceCompletionOutputs, Optional[Error], int, float, float]:
         uid = uuid4()
+        start = time.time()
+
         self.logger.info(msg=f"Task-{uid} is added.")
         self.batcher.add(inp, uid)
 
-        start = time.time()
         while True:
             await asyncio.sleep(0.1)
             if uid in self.outputs:
