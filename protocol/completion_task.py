@@ -22,6 +22,9 @@ class HuggingFaceGenerationConfig(BaseModel):
     top_k: int = Field(default=0)
     typical_p: float = Field(default=1, ge=0, le=1)
     repetition_penalty: float = Field(default=1)
+    eos_token_id: Optional[int] = Field(default=None)
+    pad_token_id: Optional[int] = Field(default=None)
+    seed: int = Field(default=1024)
 
     def __hash__(self):
         return hash(
@@ -35,7 +38,10 @@ class HuggingFaceGenerationConfig(BaseModel):
             str(self.top_p) +
             str(self.top_k) +
             str(self.typical_p) +
-            str(self.repetition_penalty)
+            str(self.repetition_penalty) +
+            str(self.eos_token_id) +
+            str(self.pad_token_id) +
+            str(self.seed)
         )
 
 

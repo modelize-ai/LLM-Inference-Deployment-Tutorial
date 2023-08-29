@@ -64,12 +64,14 @@ class TextGenerationPipeline:
         attention_mask: torch.Tensor,
         generation_config: HuggingFaceGenerationConfig
     ) -> torch.Tensor:
+        generation_config.eos_token_id = self.tokenizer.eos_token_id
+        generation_config.pad_token_id = self.tokenizer.pad_token_id
+        decode_dict = generation_config.dict(by_alias=True)
+        decode_dict.pop("seed")
         batch_gen_sequences = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
-            eos_token_id=self.tokenizer.eos_token_id,
-            pad_token_id=self.tokenizer.pad_token_id,
-            **generation_config.dict(by_alias=True)
+            **decode_dict
         )
         return batch_gen_sequences
 
