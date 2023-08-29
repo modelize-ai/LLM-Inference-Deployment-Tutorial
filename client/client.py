@@ -210,6 +210,8 @@ class Client:
         max_retries: int = 3,
         raise_on_error: bool = True
     ) -> OpenAIChatCompletionOutputs:
+        request_inputs.verify_and_preprocess()
+
         jumper = min([jumper for jumper in self.openai_jumpers if jumper.available])
         request_outputs, error, status_code = await jumper.chat_completion(
             inputs=request_inputs,
@@ -227,6 +229,7 @@ class Client:
         server_type: ServerType = ServerType.CB,
         timeout: int = 100
     ) -> HuggingFaceCompletionOutputs:
+        request_inputs.verify_and_preprocess()
 
         async def request(
             payload: dict,
