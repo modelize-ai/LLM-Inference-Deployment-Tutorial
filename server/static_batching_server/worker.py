@@ -79,6 +79,7 @@ class TextGenerationPipeline:
         self,
         input_ids: torch.Tensor,
         generated_sequences: torch.Tensor,
+        generation_config: HuggingFaceGenerationConfig,
         clean_up_tokenization_spaces=True
     ) -> List[HuggingFaceCompletionOutputs]:
         input_ids = input_ids.cpu()
@@ -96,8 +97,9 @@ class TextGenerationPipeline:
             for i, seq in enumerate(sequences):
                 if self.tokenizer.pad_token_id in seq:
                     sequences[i] = seq[: seq.index(self.tokenizer.pad_token_id)]
+            sequences_num_tokens = [len(seq) for seq in sequences]
 
-            usage = TokenUsage(prompt_tokens=len(inp), completion_tokens=sum([len(seq) for seq in sequences]))
+            usage = TokenUsage(prompt_tokens=len(inp), completion_tokens=sum(sequences_num_tokens))
             usage.total_tokens = usage.prompt_tokens + usage.completion_tokens
 
             generated_texts = self.tokenizer.batch_decode(
@@ -109,9 +111,9 @@ class TextGenerationPipeline:
                 HuggingFaceCompletionChoice(
                     text=text,
                     index=index,
-                    finish_reason="stop" if self.tokenizer.eos_token in text else "length"
+                    finish_reason="stop" if num_new_tokens < generation_config.max_new_tokens in text else "length"
                 )
-                for index, text in enumerate(generated_texts)
+                for index, (text, num_new_tokens) in enumerate(zip(generated_texts, sequences_num_tokens))
             ]
 
             batch_outputs.append(HuggingFaceCompletionOutputs(choices=choices, usage=usage))
@@ -141,7 +143,12 @@ class TextGenerationPipeline:
 
             batch_gen_sequences = self._model_generate(batch_input_ids, batch_attention_mask, generation_config)
 
-            outputs += self._postprocess(batch_input_ids, batch_gen_sequences, clean_up_tokenization_spaces)
+            outputs += self._postprocess(
+                batch_input_ids,
+                batch_gen_sequences,
+                generation_config,
+                clean_up_tokenization_spaces
+            )
         return outputs
 
 
