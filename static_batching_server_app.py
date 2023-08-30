@@ -98,7 +98,7 @@ if __name__ == "__main__":
     parser.add_argument("--server_config_file_path", type=str, default="sb_server_config.json")
     parser.add_argument("--client_url", type=str, default=None)
     parser.add_argument("--debug", action="store_true")
-    parser.add_argument("--port", type=int, default=8001)
+    parser.add_argument("--port", type=int, default=8002)
     args = parser.parse_args()
 
     logger = getLogger(__name__)  # override gunicorn logger if we use uvicorn directly
