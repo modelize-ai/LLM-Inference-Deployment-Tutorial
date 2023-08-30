@@ -111,7 +111,7 @@ class TextGenerationPipeline:
                 HuggingFaceCompletionChoice(
                     text=text,
                     index=index,
-                    finish_reason="stop" if num_new_tokens < generation_config.max_new_tokens in text else "length"
+                    finish_reason="stop" if num_new_tokens < generation_config.max_new_tokens else "length"
                 )
                 for index, (text, num_new_tokens) in enumerate(zip(generated_texts, sequences_num_tokens))
             ]
@@ -187,7 +187,7 @@ class Worker:
         else:
             model = AutoModelForCausalLM.from_pretrained(
                 pretrained_model_name_or_path=self.config.model_name_or_path,
-                torch_dtype=getattr(torch.dtype, self.config.torch_dtype),
+                torch_dtype=getattr(torch, self.config.torch_dtype),
                 device_map=self.config.device_map,
                 max_memory=max_memory,
                 low_cpu_mem_usage=self.config.low_cpu_mem_usage,
