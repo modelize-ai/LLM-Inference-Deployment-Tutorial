@@ -158,7 +158,7 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
 
-    logger = getLogger(__name__)  # override gunicorn logger if we using uvicorn directly
+    logger = getLogger(__name__)  # override gunicorn logger if we use uvicorn directly
     basicConfig(
         format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
