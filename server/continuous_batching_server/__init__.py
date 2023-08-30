@@ -14,6 +14,7 @@ __all__ = [
     "CacheConfig",
     "ModelLoadingConfig",
     "ParallelConfig",
+    "ServerConfig",
     "DEFAULT_BLOCK_SIZE_A100",
     "DEFAULT_NUM_BLOCKS_A100",
     "DEFAULT_BATCH_MAX_TOKENS_A100",
