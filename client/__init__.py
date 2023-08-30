@@ -1,3 +1,3 @@
-from .client import get_client, Client, ClientConfig
+from .client import get_client, Client, ClientConfig, ServerType
 
-__all__ = ["Client", "ClientConfig", "get_client"]
+__all__ = ["Client", "ClientConfig", "ServerType", "get_client"]
