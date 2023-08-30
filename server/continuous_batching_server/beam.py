@@ -203,7 +203,7 @@ class BeamGroup:
             return all(beam.is_finished for beam in self.beams.values())
         else:
             num_finished_beams = len(self.get_beams(BeamStatus.FINISHED))
-            return num_finished_beams == self.generation_config.num_beams
+            return num_finished_beams >= self.generation_config.num_return_sequences
 
     def get_final_beams(self) -> List[Beam]:
         if not self.is_finished:
