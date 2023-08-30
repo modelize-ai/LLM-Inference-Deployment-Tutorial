@@ -161,7 +161,10 @@ class Client:
                 new_server_urls=continuous_batching_server_urls
             )
 
-    def _update_openai_jumpers(self, openai_jumper_configs: List[OpenAIJumperConfig]):
+    def _update_openai_jumpers(self, openai_jumper_configs: Optional[List[OpenAIJumperConfig]] = None):
+        if openai_jumper_configs is None:
+            return
+
         old_jumpers = self.openai_jumpers
         old_jumper_hash_values = [hash(jumper) for jumper in old_jumpers]
         new_jumpers = []
@@ -212,7 +215,16 @@ class Client:
     ) -> OpenAIChatCompletionOutputs:
         request_inputs.verify_and_preprocess()
 
-        jumper = min([jumper for jumper in self.openai_jumpers if jumper.available])
+        available_jumpers = [jumper for jumper in self.openai_jumpers if jumper.available]
+        if not available_jumpers:
+            if raise_on_error:
+                raise HTTPException(
+                    status_code=404,
+                    detail="LookupError: none of openai jumper is available for now."
+                )
+            return OpenAIChatCompletionOutputs()
+
+        jumper = min(available_jumpers)
         request_outputs, error, status_code = await jumper.chat_completion(
             inputs=request_inputs,
             max_retries=max_retries
