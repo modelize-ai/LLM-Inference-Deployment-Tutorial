@@ -6,7 +6,7 @@ from threading import Thread
 from uuid import uuid4, UUID
 
 from .batcher import Batcher
-from .config import *
+from .config import ServerConfig
 from .worker import Worker
 from protocol.completion_task import HuggingFaceCompletionInputs, HuggingFaceCompletionOutputs
 from protocol.error import Error
@@ -32,17 +32,18 @@ class ServerDoubleInitializeError(Exception):
 
 
 class Server:
-    def __init__(self, batcher_config: BatcherConfig, worker_config: WorkerConfig, logger: Optional[Logger] = None):
+    def __init__(self, config: ServerConfig, logger: Optional[Logger] = None):
         global SERVER_SINGLETON
         if SERVER_SINGLETON is not None:
             raise ServerDoubleInitializeError()
 
-        self.batcher_config = batcher_config
-        self.worker_config = worker_config
+        self.config = config
+        self.batcher_config = config.batcher_config
+        self.worker_config = config.worker_config
         self.logger = logger if logger else getLogger(__name__)
 
-        self.batcher = Batcher(config=batcher_config, logger=logger)
-        self.worker = Worker(config=worker_config, logger=logger)
+        self.batcher = Batcher(config=self.batcher_config, logger=logger)
+        self.worker = Worker(config=self.worker_config, logger=logger)
 
         self.outputs: Dict[UUID, Tuple[HuggingFaceCompletionOutputs, Optional[Error], int, float]] = dict()
 

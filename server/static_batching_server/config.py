@@ -9,8 +9,7 @@ class BatcherConfig(BaseModel):
 
 
 class WorkerConfig(BaseModel):
-    model_id: str = Field(default=..., example="model_id")
-    model_name_or_path: str = Field(default=..., example="model_name_or_path")
+    model_name_or_path: str = Field(default="dummy_model_name_or_path")
     tokenizer_name_or_path: Optional[str] = Field(default=None)
     revision: str = Field(default="main")
     low_cpu_mem_usage: bool = Field(default=True)
@@ -25,7 +24,13 @@ class WorkerConfig(BaseModel):
     is_gptq_quantized: bool = Field(default=False)
 
 
+class ServerConfig(BatcherConfig):
+    batcher_config: BatcherConfig = Field(default=BatcherConfig())
+    worker_config: WorkerConfig = Field(default=WorkerConfig())
+
+
 __all__ = [
     "BatcherConfig",
-    "WorkerConfig"
+    "WorkerConfig",
+    "ServerConfig"
 ]
