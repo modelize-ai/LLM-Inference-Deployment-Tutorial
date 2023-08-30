@@ -2,7 +2,7 @@ import json
 from logging import getLogger, DEBUG, INFO
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import HTTPException, FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -85,7 +85,11 @@ async def get_model_id():
 @app.post(ROUTE_POST_CONTINUOUS_BATCHING_COMPLETION, response_model=HuggingFaceCompletionOutputs)
 async def execute_completion(request_inputs: HuggingFaceCompletionInputs):
     server = get_server()
-    return await server.wait_task_done(request_inputs)
+    outputs, error, status_code, cpu_time, wall_time = await server.wait_task_done(request_inputs)
+    if status_code != 200:
+        logger.error(msg=str(error))
+        raise HTTPException(status_code=status_code, detail=str(error))
+    return outputs
 
 
 if __name__ == "__main__":
