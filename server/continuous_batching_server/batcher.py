@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from logging import getLogger, Logger
 from typing import *
@@ -117,8 +118,10 @@ class Batcher:
             beam_group = self.running.pop(0)
             if beam_group.is_finished:
                 finishing.append(beam_group)
+                self.logger.debug(f"BeamGroup-{beam_group.request_id} finished, put into finishing queue.")
             else:
                 running.append(beam_group)
+                self.logger.debug(f"BeamGroup-{beam_group.request_id} not finish, put back to running queue.")
         self.running = running
 
         # step2: 对运行队列中仍需继续生成的请求进行缓存空间的分配
