@@ -43,13 +43,13 @@ class CacheConfig(BaseModel):
     num_blocks_cpu: Optional[int] = Field(default=1024)
     block_size: int = Field(default=16)
     gpu_memory_utilization: float = Field(default=0.98)
-    watermark: float = 0.01
+    watermark: float = Field(default=0.01)
     pin_memory_on_cpu: bool = Field(default=True)
 
 
 class ModelLoadingConfig(BaseModel):
-    model_type: str = Field(default=..., regex="(" + "|".join(list(MODEL_AUTO_TABLE.keys())) + ")", example="llama")
-    model_name_or_path: str = Field(default=..., example="path_to_llama_model_dir")
+    model_type: str = Field(default="llama", regex="(" + "|".join(list(MODEL_AUTO_TABLE.keys())) + ")")
+    model_name_or_path: str = Field(default="dummy_path_to_llama_model")
     torch_dtype: str = Field(default="float16", regex="(" + "|".join(list(TORCH_FLOAT_DTYPE_MAP.keys())) + ")")
     tokenizer_name_or_path: Optional[str] = Field(default=None)
     use_fast_tokenizer: bool = Field(default=False)
@@ -91,6 +91,13 @@ class ModelConfig:
         return self.model_config.num_hidden_layers
 
 
+class ServerConfig(BaseModel):
+    model_loading_config: ModelLoadingConfig = Field(default=ModelLoadingConfig())
+    batcher_config: BatcherConfig = Field(default=BatcherConfig())
+    cache_config: CacheConfig = Field(default=CacheConfig())
+    parallel_config: ParallelConfig = Field(default=ParallelConfig())
+
+
 __all__ = [
     "ModelFactory",
     "TORCH_FLOAT_DTYPE_MAP",
@@ -99,5 +106,6 @@ __all__ = [
     "CacheConfig",
     "ModelLoadingConfig",
     "ParallelConfig",
-    "ModelConfig"
+    "ModelConfig",
+    "ServerConfig"
 ]

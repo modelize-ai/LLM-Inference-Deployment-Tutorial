@@ -10,12 +10,7 @@ from transformers import AutoTokenizer
 from .batcher import Batcher
 from .beam import Beam, BeamGroup, BeamStatus
 from .worker import Worker
-from .config import (
-    BatcherConfig,
-    CacheConfig,
-    ModelLoadingConfig,
-    ParallelConfig
-)
+from .config import ServerConfig
 from protocol.completion_task import (
     TokenUsage,
     HuggingFaceCompletionChoice,
@@ -48,15 +43,19 @@ class ServerDoubleInitializeError(Exception):
 class Server:
     def __init__(
         self,
-        batcher_config: BatcherConfig,
-        cache_config: CacheConfig,
-        model_loading_config: ModelLoadingConfig,
-        parallel_config: ParallelConfig,
+        config: ServerConfig,
         logger: Optional[Logger] = None
     ):
         global SERVER_SINGLETON
         if SERVER_SINGLETON is not None:
             raise ServerDoubleInitializeError()
+
+        self.config = config
+
+        batcher_config = config.batcher_config
+        cache_config = config.cache_config
+        model_loading_config = config.model_loading_config
+        parallel_config = config.parallel_config
 
         assert parallel_config.tp_size == 1, "we don't provide model parallelism support for now."
 
