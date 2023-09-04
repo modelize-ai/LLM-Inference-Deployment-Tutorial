@@ -58,7 +58,7 @@
 
 此外，还有 [FasterTransformer](https://github.com/NVIDIA/FasterTransformer), [FlexGen](https://github.com/FMInference/FlexGen), [EnergonAI](https://github.com/hpcaitech/EnergonAI) 等针对大语言模型推理性能优化而设计的框架，但更新频率较低，故不在此作进一步介绍。
 
-我们十分建议开发者们在学习完本项目后，亲自去阅读以上开源项目的代码，以进一步理解大模型推理引擎设计思路和优化技术。
+我们十分建议开发者们在学习完本项目后，亲自去阅读以上开源项目的代码，以进一步理解大模型推理引擎设计思路和优化技术。有关更多大语言模型推理引擎和部署框架对比的详细介绍，可参阅这篇[文章](https://mp.weixin.qq.com/s/xIbNSAI9cKGIA19yZhIEgg) 。
 
 > 本项目提供的推理引擎代码在权重加载、模型网络代码设计和文本生成策略实现上借鉴了 TGI 项目；在内存管理上借鉴了 vLLM 项目。
 
